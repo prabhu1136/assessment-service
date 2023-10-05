@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @EnableAutoConfiguration
 @SpringBootApplication
-public class AssessmentMainServiceApplication {
+public class AssessmentServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AssessmentMainServiceApplication.class, args);
+		SpringApplication.run(AssessmentServiceApplication.class, args);
 	}
 
 }

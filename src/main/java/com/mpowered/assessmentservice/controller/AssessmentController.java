@@ -16,7 +16,7 @@ import com.mpowered.assessmentservice.constant.Constants;
 public class AssessmentController {
 	Logger log = LoggerFactory.getLogger(getClass());
 	
-	@GetMapping("/getAllAssessments")
+	@GetMapping("/all")
 	public List getAssessmentsList() {
 		return new ArrayList();
 	}

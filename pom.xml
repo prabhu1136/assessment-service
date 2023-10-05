@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.mpowered</groupId>
-	<artifactId>assessment-main-service</artifactId>
+	<artifactId>assessment-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>assessment main service</name>
 	<description>Assessment service to store in postgre DB</description>
