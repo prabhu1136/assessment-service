@@ -1,4 +1,4 @@
-package com.mpowered.assessmentmainservice;
+package com.mpowered.assessmentservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
