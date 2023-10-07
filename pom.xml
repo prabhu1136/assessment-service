@@ -15,6 +15,7 @@
 	<description>Assessment service to store in postgre DB</description>
 	<properties>
 		<java.version>11</java.version>
+		<mph-commons-dto-version>1.0.9-SNAPSHOT</mph-commons-dto-version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -25,6 +26,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.mpowered</groupId>
+			<artifactId>mpowered-health-common-dto</artifactId>
+			<version>${mph-commons-dto-version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
