@@ -9,5 +9,4 @@ import java.util.Optional;
 
 @Repository
 public interface AssessmentSubmissionRepository extends JpaRepository<AssessmentSubmission, Integer> {
-    Optional<AssessmentSubmission> findById(Integer Id);
 }

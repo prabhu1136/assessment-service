@@ -28,7 +28,7 @@ public class AssessmentController {
 		return new ArrayList();
 	}
 
-	@PostMapping("/statuschange")
+	@PostMapping("/status")
 	public ResponseEntity<Object> updateAssessmentStatus(@RequestBody AssessmentRequest assessmentRequest) {
 		return assessmentService.updateAssessmentStatus(assessmentRequest);
 	}

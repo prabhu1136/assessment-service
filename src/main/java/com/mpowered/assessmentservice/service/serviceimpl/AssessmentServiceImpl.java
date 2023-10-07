@@ -31,7 +31,7 @@ public class AssessmentServiceImpl implements AssessmentService {
             }
                 submission.get().setStatus(assessmentRequest.getStatus());
                 assessmentSubmissionRepository.save(submission.get());
-                return ResponseEntity.ok("Status updated successfully to 'draft'");
+                return ResponseEntity.ok(String.format("Status updated successfully to %s",assessmentRequest.getStatus()));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Failed to update status");
         }
