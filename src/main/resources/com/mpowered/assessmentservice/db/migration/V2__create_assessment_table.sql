@@ -36,7 +36,5 @@ upper(as2.status) not in ('COMPLETED', 'EXPIRED')
 order by 
 case when as2.status ='PENDING' then 1
 	when as2.status = 'DRAFT' then 2
-	when as2.status = 'COMPLETED' then 3
-	when as2.status = 'EXPIRED' then 4
 end asc,
 assigndate asc);
