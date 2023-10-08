@@ -13,7 +13,6 @@ import com.mpowered.commons.pojo.MpoweredUser;
 import com.mpowered.commons.pojo.userpojo.UserSessionDto;
 //import com.mpowered.commons.security.AuthHelper;
 
-import org.springframework.security.core.Authentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +39,7 @@ public class AssessmentController {
 	}
 
 	@GetMapping("/all")
-	public List<AssessmentResponse> getAssessmentsList(Authentication authentication, @RequestHeader Map<String, Object> headers,
+	public List<AssessmentResponse> getAssessmentsList(@RequestHeader Map<String, Object> headers,
 			@RequestBody AssessmentRequest assessmentRequest) {
 		//Optional<MpoweredUser> mpoweredUser = authHelper.registerMpoweredUser(authentication);
 		log.info("getting all assessments");
@@ -58,7 +57,7 @@ public class AssessmentController {
 	}
 
 	@GetMapping ("metadata")
-	public AssessmentResponse getAssessmentMetaData(@RequestParam("instanceId")Integer instanceId, Authentication authentication,
+	public AssessmentResponse getAssessmentMetaData(@RequestParam("instanceId")Integer instanceId,
 			@RequestHeader Map<String, Object> headers) {
 		log.info("getting meta data");
 		String userKcId= getUserIdFromHeader(headers);
@@ -103,7 +102,7 @@ public class AssessmentController {
 	}
 
 	@GetMapping("/allhomedashboard")
-	public List<AssessmentResponse> getAssessmentsHomeDashboard(Authentication authentication, @RequestHeader Map<String, Object> headers,
+	public List<AssessmentResponse> getAssessmentsHomeDashboard(@RequestHeader Map<String, Object> headers,
 			@RequestBody AssessmentRequest assessmentRequest) {
 		log.info("getting assessments for homedashboard");
 		String userKcId= getUserIdFromHeader(headers);
