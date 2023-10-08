@@ -10,5 +10,8 @@ import lombok.*;
 @AllArgsConstructor
 public class AssessmentRequest {
     private Integer assessmentInstanceId;
+    private AssessmentRequestBody assessmentRequestBody;
+    private Pageable pageable;
+    private String deviceType;
     private String status;
 }
