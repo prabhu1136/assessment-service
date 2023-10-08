@@ -1,15 +1,26 @@
 package com.mpowered.assessmentservice.service.serviceimpl;
 
 import com.mpowered.assessmentservice.constant.Constants;
+import com.mpowered.assessmentservice.entities.AssessmentHomeDashboardSummary;
 import com.mpowered.assessmentservice.entities.AssessmentSubmission;
+import com.mpowered.assessmentservice.entities.AssessmentsSummary;
+import com.mpowered.assessmentservice.pojo.AssessmentMeta;
 import com.mpowered.assessmentservice.pojo.AssessmentRequest;
+import com.mpowered.assessmentservice.pojo.AssessmentResponse;
+import com.mpowered.assessmentservice.repository.AssessmentHomeDashboardMetaRepository;
+import com.mpowered.assessmentservice.repository.AssessmentMetaRepository;
 import com.mpowered.assessmentservice.repository.AssessmentSubmissionRepository;
 import com.mpowered.assessmentservice.service.AssessmentService;
+import com.mpowered.assessmentservice.service.mapper.AssessmentMapper;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -17,8 +28,15 @@ import java.util.Optional;
 public class AssessmentServiceImpl implements AssessmentService {
     private final AssessmentSubmissionRepository assessmentSubmissionRepository;
 
-    public AssessmentServiceImpl(AssessmentSubmissionRepository assessmentSubmissionRepository) {
+    private AssessmentMetaRepository assessmentMetaRepository;
+    private AssessmentHomeDashboardMetaRepository assessmentHomeDashboardMetaRepository;
+    
+    public AssessmentServiceImpl(AssessmentSubmissionRepository assessmentSubmissionRepository,
+    		AssessmentMetaRepository assessmentMetaRepository, AssessmentHomeDashboardMetaRepository 
+    		assessmentHomeDashboardMetaRepository) {
         this.assessmentSubmissionRepository = assessmentSubmissionRepository;
+        this.assessmentMetaRepository =assessmentMetaRepository;
+        this.assessmentHomeDashboardMetaRepository = assessmentHomeDashboardMetaRepository;
     }
 
     @Override
@@ -36,5 +54,70 @@ public class AssessmentServiceImpl implements AssessmentService {
             return ResponseEntity.internalServerError().body("Failed to update status");
         }
 
+    }
+    
+    @Override
+	public List<AssessmentResponse> getAllAssessments(String userId, AssessmentRequest assessmentRequest,
+			boolean homeDashboard){
+    	int offset = assessmentRequest.getPageable().getOffset();
+    	int count = assessmentRequest.getPageable().getCount();
+    	if(homeDashboard) {
+    		return getAllHomeDashboardAssessments(userId, assessmentRequest);
+    	}else { 
+    		return getAllAssessments(userId, assessmentRequest);
+    	}
+	}
+    
+    @Override
+    public AssessmentResponse getAssessmentMetadata(String userId, Integer instanceId) {
+    	log.info("fetching data for instance {} and user id {}.", instanceId, userId);
+    	Optional<AssessmentsSummary> assessSummary =assessmentMetaRepository.findByInstanceIdAndMasterPatientid(instanceId, userId);
+    	if(assessSummary.isPresent()) {
+    		AssessmentMapper assesmentMapper = AssessmentMapper.INSTANCE;
+	    	AssessmentResponse assessmentResponse = new AssessmentResponse();
+    		log.info("returning data for patient id {}.", assessSummary.get().getMasterPatientid());
+	    	AssessmentMeta assessmentMeta = assesmentMapper.entityToAssessmentSummaryDTO(assessSummary.get());
+			assessmentResponse.setAssessmentMeta(assessmentMeta);
+			return assessmentResponse;
+    	}
+    	return new AssessmentResponse();
+    }
+    
+    private List<AssessmentResponse> getAllAssessments(String userId, AssessmentRequest assessmentRequest){
+    	int offset = assessmentRequest.getPageable().getOffset();
+    	int count = assessmentRequest.getPageable().getCount();
+    	List<AssessmentsSummary>  assessmentEntity = assessmentMetaRepository.findByMasterPatientid(userId,
+				PageRequest.of(offset, count));
+    	log.info("got {} assessments for user {}.", (assessmentEntity != null ? assessmentEntity.size() +"":"null"),
+				userId);
+		AssessmentMapper assesmentMapper = AssessmentMapper.INSTANCE;
+		List<AssessmentResponse> responses = new ArrayList<>();
+		for(AssessmentsSummary assessmentsummary: assessmentEntity) {
+			AssessmentMeta assessmentMeta = assesmentMapper.entityToAssessmentSummaryDTO(assessmentsummary);
+			AssessmentResponse assessmentResponse = new AssessmentResponse();
+			assessmentResponse.setAssessmentMeta(assessmentMeta);
+			responses.add(assessmentResponse);
+		}
+		log.info("assessments response size {}.", responses.size());
+		return responses;
+    }
+    
+    private List<AssessmentResponse> getAllHomeDashboardAssessments(String userId, AssessmentRequest assessmentRequest){
+    	int offset = assessmentRequest.getPageable().getOffset();
+    	int count = assessmentRequest.getPageable().getCount();
+    	List<AssessmentHomeDashboardSummary>  assessmentEntity = assessmentHomeDashboardMetaRepository.findByMasterPatientid(userId,
+				PageRequest.of(offset, count));
+    	log.info("got {} HB assessments for user {}.", (assessmentEntity != null ? assessmentEntity.size() +"":"null"),
+				userId);
+    	AssessmentMapper assesmentMapper = AssessmentMapper.INSTANCE;
+		List<AssessmentResponse> responses = new ArrayList<>();
+		for(AssessmentHomeDashboardSummary assessmentHBsummary: assessmentEntity) {
+			AssessmentMeta assessmentMeta = assesmentMapper.entityHomeDashboardToAssessmentSummary(assessmentHBsummary);
+			AssessmentResponse assessmentResponse = new AssessmentResponse();
+			assessmentResponse.setAssessmentMeta(assessmentMeta);
+			responses.add(assessmentResponse);
+		}
+		log.info("HB assessments response size {}.", responses.size());
+		return responses;
     }
 }
