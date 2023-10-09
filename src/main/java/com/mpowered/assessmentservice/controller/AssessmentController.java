@@ -39,24 +39,22 @@ public class AssessmentController {
 		this.assessmentService = assessmentService;
 	}
 
-	@GetMapping("/all/{assessmentname}/{dateParam}/{status}/{count}/{offset}")
+	@PostMapping("/all")
 	public List<AssessmentResponse> getAssessmentsList(@RequestHeader Map<String, Object> headers,
-			//@RequestBody AssessmentRequest assessmentRequest) {
-			@PathVariable("assessmentname") String assessmentname, @PathVariable("dateParam") String dateParam, 
-			@PathVariable("status") String assessmentStatus, @PathVariable("count") Integer count, @PathVariable("offset") Integer offset){
+			@RequestBody AssessmentRequest assessmentRequest) {
 		//Optional<MpoweredUser> mpoweredUser = authHelper.registerMpoweredUser(authentication);
 		log.info("getting all assessments");
 		String userKcId= getUserIdFromHeader(headers);
 		if (! userKcId.isEmpty()) {
 			log.info("getting assessments for user: {}", userKcId);
-			AssessmentRequest assessmentRequest = new AssessmentRequest();
+			/*AssessmentRequest assessmentRequest = new AssessmentRequest();
 			Pageable pageable =new Pageable();
 			pageable.setCount(count);
 			pageable.setOffset(offset);
 			assessmentRequest.setPageable(pageable);
 			assessmentRequest.setAssessentName(assessmentname);
 			assessmentRequest.setStatus(assessmentStatus);
-			assessmentRequest.setDate(dateParam);
+			assessmentRequest.setDate(dateParam);*/
 			return assessmentService.getAllAssessments( userKcId, assessmentRequest, false);
 		}
 		return new ArrayList<>();
