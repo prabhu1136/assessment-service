@@ -8,6 +8,7 @@ import java.util.Optional;
 import com.mpowered.assessmentservice.pojo.AssessmentMeta;
 import com.mpowered.assessmentservice.pojo.AssessmentRequest;
 import com.mpowered.assessmentservice.pojo.AssessmentResponse;
+import com.mpowered.assessmentservice.pojo.Pageable;
 import com.mpowered.assessmentservice.service.AssessmentService;
 import com.mpowered.commons.pojo.MpoweredUser;
 import com.mpowered.commons.pojo.userpojo.UserSessionDto;
@@ -38,7 +39,7 @@ public class AssessmentController {
 		this.assessmentService = assessmentService;
 	}
 
-	@GetMapping("/all")
+	@PostMapping("/all")
 	public List<AssessmentResponse> getAssessmentsList(@RequestHeader Map<String, Object> headers,
 			@RequestBody AssessmentRequest assessmentRequest) {
 		//Optional<MpoweredUser> mpoweredUser = authHelper.registerMpoweredUser(authentication);
@@ -46,6 +47,14 @@ public class AssessmentController {
 		String userKcId= getUserIdFromHeader(headers);
 		if (! userKcId.isEmpty()) {
 			log.info("getting assessments for user: {}", userKcId);
+			/*AssessmentRequest assessmentRequest = new AssessmentRequest();
+			Pageable pageable =new Pageable();
+			pageable.setCount(count);
+			pageable.setOffset(offset);
+			assessmentRequest.setPageable(pageable);
+			assessmentRequest.setAssessentName(assessmentname);
+			assessmentRequest.setStatus(assessmentStatus);
+			assessmentRequest.setDate(dateParam);*/
 			return assessmentService.getAllAssessments( userKcId, assessmentRequest, false);
 		}
 		return new ArrayList<>();
@@ -101,13 +110,18 @@ public class AssessmentController {
 		return String.join(",", fields);
 	}
 
-	@GetMapping("/allhomedashboard")
+	@GetMapping("/allhomedashboard/{offset}/{count}")
 	public List<AssessmentResponse> getAssessmentsHomeDashboard(@RequestHeader Map<String, Object> headers,
-			@RequestBody AssessmentRequest assessmentRequest) {
+			@PathVariable("offset") Integer offset, @PathVariable("count") Integer count) {
 		log.info("getting assessments for homedashboard");
 		String userKcId= getUserIdFromHeader(headers);
 		if (! userKcId.isEmpty()) {
 			log.info("getting assessments for homedashboard for user: {}", userKcId);
+			AssessmentRequest assessmentRequest = new AssessmentRequest();
+			Pageable pageable = new Pageable();
+			pageable.setCount(count);
+			pageable.setOffset(offset);
+			assessmentRequest.setPageable(pageable);
 			return assessmentService.getAllAssessments( userKcId, assessmentRequest, true);
 		}
 		return new ArrayList<>();
