@@ -14,4 +14,6 @@ public class AssessmentRequest {
     private Pageable pageable;
     private String deviceType;
     private String status;
+    private String assessentName;
+    private String date;
 }
