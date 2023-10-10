@@ -4,6 +4,8 @@ import com.mpowered.assessmentservice.constant.Constants;
 import com.mpowered.assessmentservice.entities.AssessmentHomeDashboardSummary;
 import com.mpowered.assessmentservice.entities.AssessmentSubmission;
 import com.mpowered.assessmentservice.entities.AssessmentsSummary;
+import com.mpowered.assessmentservice.pojo.AssessmentFhirResponse;
+import com.mpowered.assessmentservice.pojo.AssessmentGridResponse;
 import com.mpowered.assessmentservice.pojo.AssessmentMeta;
 import com.mpowered.assessmentservice.pojo.AssessmentRequest;
 import com.mpowered.assessmentservice.pojo.AssessmentResponse;
@@ -57,15 +59,11 @@ public class AssessmentServiceImpl implements AssessmentService {
     }
     
     @Override
-	public List<AssessmentResponse> getAllAssessments(String userId, AssessmentRequest assessmentRequest,
-			boolean homeDashboard){
-    	int offset = assessmentRequest.getPageable().getOffset();
-    	int count = assessmentRequest.getPageable().getCount();
-    	if(homeDashboard) {
-    		return getAllHomeDashboardAssessments(userId, assessmentRequest);
-    	}else { 
-    		return getAllAssessments(userId, assessmentRequest);
-    	}
+	public AssessmentGridResponse getAllAssessments(String userId, AssessmentRequest assessmentRequest){
+    	/*int offset = assessmentRequest.getPageable().getOffset();
+    	int count = assessmentRequest.getPageable().getCount();*/
+
+    	return getAllGridAssessments(userId, assessmentRequest);
 	}
     
     @Override
@@ -83,7 +81,7 @@ public class AssessmentServiceImpl implements AssessmentService {
     	return new AssessmentResponse();
     }
     
-    private List<AssessmentResponse> getAllAssessments(String userId, AssessmentRequest assessmentRequest){
+    private AssessmentGridResponse getAllGridAssessments(String userId, AssessmentRequest assessmentRequest){
     	int offset = assessmentRequest.getPageable().getOffset();
     	int count = assessmentRequest.getPageable().getCount();
     	List<AssessmentsSummary>  assessmentEntity = assessmentMetaRepository.findByMasterPatientid(userId,
@@ -91,18 +89,27 @@ public class AssessmentServiceImpl implements AssessmentService {
     	log.info("got {} assessments for user {}.", (assessmentEntity != null ? assessmentEntity.size() +"":"null"),
 				userId);
 		AssessmentMapper assesmentMapper = AssessmentMapper.INSTANCE;
-		List<AssessmentResponse> responses = new ArrayList<>();
+		List<AssessmentFhirResponse> responses = new ArrayList<>();
 		for(AssessmentsSummary assessmentsummary: assessmentEntity) {
 			AssessmentMeta assessmentMeta = assesmentMapper.entityToAssessmentSummaryDTO(assessmentsummary);
 			AssessmentResponse assessmentResponse = new AssessmentResponse();
 			assessmentResponse.setAssessmentMeta(assessmentMeta);
-			responses.add(assessmentResponse);
+			AssessmentFhirResponse assessmentFhirResponse = new AssessmentFhirResponse();
+			assessmentFhirResponse.setAssessmentResponse(assessmentResponse);
+			assessmentFhirResponse.setId(assessmentsummary.getInstanceId().toString() );
+			assessmentFhirResponse.setResourceType("Assessment");
+			responses.add(assessmentFhirResponse);
 		}
-		log.info("assessments response size {}.", responses.size());
-		return responses;
+		long total = assessmentMetaRepository.countByMasterPatientid(userId);
+		log.info("assessments response size {}, {}.", responses.size(), total);
+		AssessmentGridResponse assessmentGridResponse = new AssessmentGridResponse();
+		assessmentGridResponse.setAssessments(responses);
+		assessmentGridResponse.setTotal(total);
+		return assessmentGridResponse;
     }
     
-    private List<AssessmentResponse> getAllHomeDashboardAssessments(String userId, AssessmentRequest assessmentRequest){
+    @Override
+    public List<AssessmentResponse> getAllHomeDashboardAssessments(String userId, AssessmentRequest assessmentRequest){
     	int offset = assessmentRequest.getPageable().getOffset();
     	int count = assessmentRequest.getPageable().getCount();
     	List<AssessmentHomeDashboardSummary>  assessmentEntity = assessmentHomeDashboardMetaRepository.findByMasterPatientid(userId,
