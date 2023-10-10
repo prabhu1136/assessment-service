@@ -127,4 +127,22 @@ public class AssessmentServiceImpl implements AssessmentService {
 		log.info("HB assessments response size {}.", responses.size());
 		return responses;
     }
+
+	@Override
+	public AssessmentFhirResponse getAssessmentByInstanceId(AssessmentRequest assessmentRequest) {
+		Optional<AssessmentsSummary> assessSummary =assessmentMetaRepository.findByInstanceId(assessmentRequest.getAssessmentInstanceId());
+		if(assessSummary.isPresent()) {
+			AssessmentsSummary assessmentsSummary = assessSummary.get();
+    		AssessmentMapper assesmentMapper = AssessmentMapper.INSTANCE;
+	    	AssessmentMeta assessmentMeta = assesmentMapper.entityToAssessmentSummaryDTO(assessmentsSummary);
+			AssessmentResponse assessmentResponse = new AssessmentResponse();
+			assessmentResponse.setAssessmentMeta(assessmentMeta);
+			AssessmentFhirResponse assessmentFhirResponse = new AssessmentFhirResponse();
+			assessmentFhirResponse.setAssessmentResponse(assessmentResponse);
+			assessmentFhirResponse.setId(assessmentsSummary.getInstanceId().toString() );
+			assessmentFhirResponse.setResourceType("Assessment");
+			return assessmentFhirResponse;
+    	}
+    	return new AssessmentFhirResponse();
+	}
 }

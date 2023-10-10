@@ -10,6 +10,7 @@ import com.mpowered.assessmentservice.pojo.AssessmentMeta;
 import com.mpowered.assessmentservice.pojo.AssessmentRequest;
 import com.mpowered.assessmentservice.pojo.AssessmentResponse;
 import com.mpowered.assessmentservice.pojo.Pageable;
+import com.mpowered.assessmentservice.pojo.AssessmentFhirResponse;
 import com.mpowered.assessmentservice.service.AssessmentService;
 import com.mpowered.commons.pojo.MpoweredUser;
 import com.mpowered.commons.pojo.userpojo.UserSessionDto;
@@ -59,6 +60,12 @@ public class AssessmentController {
 			return assessmentService.getAllAssessments( userKcId, assessmentRequest);
 		}
 		return new AssessmentGridResponse();
+	}
+
+	@GetMapping
+	public AssessmentFhirResponse getAssessmentsByInstanceId(@RequestBody AssessmentRequest assessmentRequest) {
+		log.info("get assessment by instanceId");
+		return assessmentService.getAssessmentByInstanceId(assessmentRequest);
 	}
 
 	@PostMapping("/status")

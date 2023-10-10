@@ -14,4 +14,5 @@ public interface AssessmentMetaRepository extends JpaRepository<AssessmentsSumma
 	List<AssessmentsSummary> findByMasterPatientid(String masterPatientid, Pageable pageInfo);
 	Long countByMasterPatientid(String masterPatientid);
 	Optional<AssessmentsSummary> findByInstanceIdAndMasterPatientid(Integer instanceId, String userId);
+	Optional<AssessmentsSummary> findByInstanceId(Integer instanceId);
 }
