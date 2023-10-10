@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS assessment_schema.assessment_user_question_map (
 
 CREATE or REPLACE VIEW assessment_schema.assessment_grid_view as(Select as2.instance_id, as2.status,
 as2.assessment_id, as2.patient_id as master_patient_id,  ac.org_id, o.name as orgname, o.img_url, ac.name as assesmentname,
-as2.created_at as assigndate, am.instance_expiry_date, as2.updated_at
+as2.created_at as assigndate, am.instance_expiry_date, as2.updated_at, ac.number_of_questions
 from assessment_schema.assessment_submission as2, assessment_schema.assessment_config ac, partner_schema.organization o,
 assessment_schema.assessment_instance_map am
 where as2.assessment_id = ac.id and am.instance_id = as2.instance_id and ac.org_id = o.id
