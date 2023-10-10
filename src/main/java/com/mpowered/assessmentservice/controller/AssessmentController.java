@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.mpowered.assessmentservice.pojo.AssessmentGridResponse;
 import com.mpowered.assessmentservice.pojo.AssessmentMeta;
 import com.mpowered.assessmentservice.pojo.AssessmentRequest;
 import com.mpowered.assessmentservice.pojo.AssessmentResponse;
@@ -40,7 +41,7 @@ public class AssessmentController {
 	}
 
 	@PostMapping("/all")
-	public List<AssessmentResponse> getAssessmentsList(@RequestHeader Map<String, Object> headers,
+	public AssessmentGridResponse getAssessmentsList(@RequestHeader Map<String, Object> headers,
 			@RequestBody AssessmentRequest assessmentRequest) {
 		//Optional<MpoweredUser> mpoweredUser = authHelper.registerMpoweredUser(authentication);
 		log.info("getting all assessments");
@@ -55,9 +56,9 @@ public class AssessmentController {
 			assessmentRequest.setAssessentName(assessmentname);
 			assessmentRequest.setStatus(assessmentStatus);
 			assessmentRequest.setDate(dateParam);*/
-			return assessmentService.getAllAssessments( userKcId, assessmentRequest, false);
+			return assessmentService.getAllAssessments( userKcId, assessmentRequest);
 		}
-		return new ArrayList<>();
+		return new AssessmentGridResponse();
 	}
 
 	@PostMapping("/status")
@@ -122,7 +123,7 @@ public class AssessmentController {
 			pageable.setCount(count);
 			pageable.setOffset(offset);
 			assessmentRequest.setPageable(pageable);
-			return assessmentService.getAllAssessments( userKcId, assessmentRequest, true);
+			return assessmentService.getAllHomeDashboardAssessments( userKcId, assessmentRequest);
 		}
 		return new ArrayList<>();
 	}

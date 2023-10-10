@@ -12,5 +12,6 @@ import com.mpowered.assessmentservice.entities.AssessmentsSummary;
 @Repository
 public interface AssessmentMetaRepository extends JpaRepository<AssessmentsSummary,Long>{
 	List<AssessmentsSummary> findByMasterPatientid(String masterPatientid, Pageable pageInfo);
+	Long countByMasterPatientid(String masterPatientid);
 	Optional<AssessmentsSummary> findByInstanceIdAndMasterPatientid(Integer instanceId, String userId);
 }
