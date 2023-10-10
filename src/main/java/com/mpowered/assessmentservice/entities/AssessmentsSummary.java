@@ -61,4 +61,10 @@ public class AssessmentsSummary implements Serializable{
 	@Column(name="instance_expiry_date")
 	private Date expiryDate;
 
+	@Column(name="updated_at")
+	private Date updatedAt;
+
+	@Column(name="number_of_questions")
+	private int numberOfQuestions;
+
 }
