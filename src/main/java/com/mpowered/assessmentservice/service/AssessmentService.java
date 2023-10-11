@@ -15,5 +15,5 @@ public interface AssessmentService {
     AssessmentGridResponse getAllAssessments(String userId, AssessmentRequest assessmentRequest);
     AssessmentResponse getAssessmentMetadata(String userId, Integer instanceId);
     List<AssessmentResponse> getAllHomeDashboardAssessments(String userId, AssessmentRequest assessmentRequest);
-    AssessmentFhirResponse getAssessmentByInstanceId(AssessmentRequest assessmentRequest);
+    AssessmentGridResponse getAssessmentByInstanceId(AssessmentRequest assessmentRequest);
 }

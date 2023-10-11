@@ -62,8 +62,8 @@ public class AssessmentController {
 		return new AssessmentGridResponse();
 	}
 
-	@GetMapping
-	public AssessmentFhirResponse getAssessmentsByInstanceId(@RequestBody AssessmentRequest assessmentRequest) {
+	@PostMapping
+	public AssessmentGridResponse getAssessmentsByInstanceId(@RequestBody AssessmentRequest assessmentRequest) {
 		log.info("get assessment by instanceId");
 		return assessmentService.getAssessmentByInstanceId(assessmentRequest);
 	}

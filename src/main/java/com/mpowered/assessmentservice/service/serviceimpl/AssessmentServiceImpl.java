@@ -129,10 +129,11 @@ public class AssessmentServiceImpl implements AssessmentService {
     }
 
 	@Override
-	public AssessmentFhirResponse getAssessmentByInstanceId(AssessmentRequest assessmentRequest) {
+	public AssessmentGridResponse getAssessmentByInstanceId(AssessmentRequest assessmentRequest) {
 		Optional<AssessmentsSummary> assessSummary =assessmentMetaRepository.findByInstanceId(assessmentRequest.getAssessmentInstanceId());
 		if(assessSummary.isPresent()) {
 			AssessmentsSummary assessmentsSummary = assessSummary.get();
+			List<AssessmentFhirResponse> assessmentResponses = new ArrayList<>();
     		AssessmentMapper assesmentMapper = AssessmentMapper.INSTANCE;
 	    	AssessmentMeta assessmentMeta = assesmentMapper.entityToAssessmentSummaryDTO(assessmentsSummary);
 			AssessmentResponse assessmentResponse = new AssessmentResponse();
@@ -141,8 +142,11 @@ public class AssessmentServiceImpl implements AssessmentService {
 			assessmentFhirResponse.setAssessmentResponse(assessmentResponse);
 			assessmentFhirResponse.setId(assessmentsSummary.getInstanceId().toString() );
 			assessmentFhirResponse.setResourceType("Assessment");
-			return assessmentFhirResponse;
+			AssessmentGridResponse assessmentGridResponse = new AssessmentGridResponse();
+			assessmentResponses.add(assessmentFhirResponse);
+			assessmentGridResponse.setAssessments(assessmentResponses);
+			return assessmentGridResponse;
     	}
-    	return new AssessmentFhirResponse();
+    	return new AssessmentGridResponse();
 	}
 }
